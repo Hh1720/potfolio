@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>黄恒 - AI产品运营实习生</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body {
+    font-family: "SF Pro Display", "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #0b0b14;
+    color: #e8e8ed;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* Subtle grid overlay */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  /* ===== BG PARTICLES ===== */
+  #bg-particles {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0; pointer-events: none; opacity: 0.5;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 2.5rem; display: flex; align-items: center; justify-content: space-between;
+    height: 68px;
+    background: rgba(18,18,28,0.72); backdrop-filter: blur(20px) saturate(1.5);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: background 0.3s;
+  }
+  nav .logo { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.3px; color: #fff; }
+  nav ul { display: flex; list-style: none; gap: 2rem; align-items: center; }
+  nav ul a { font-size: 0.82rem; font-weight: 500; color: rgba(255,255,255,0.6); transition: color 0.25s; position: relative; letter-spacing: 0.2px; }
+  nav ul a:hover { color: #fff; }
+  nav ul a::after { content: ''; position: absolute; bottom: -6px; left: 0; width: 0; height: 1.5px; background: linear-gradient(90deg, #6366f1, #818cf8); transition: width 0.3s; }
+  nav ul a:hover::after { width: 100%; }
+  .nav-cta { padding: 0.5rem 1.25rem; border-radius: 50px; font-size: 0.82rem; font-weight: 600; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; border: none; cursor: pointer; transition: all 0.3s; }
+  .nav-cta:hover { box-shadow: 0 0 24px rgba(99,102,241,0.4); transform: translateY(-1px); }
+  .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+
+  /* ===== HERO SPHERE (full viewport) ===== */
+  #sphere-stage {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 0; pointer-events: auto;
+    transition: opacity 0.6s ease;
+  }
+  #sphere-stage::before {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 420px; height: 420px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,212,191,0.18) 0%, rgba(34,211,238,0.06) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  #sphere-stage.faded { opacity: 0; pointer-events: none; }
+  #sphere-stage canvas { display: block; position: relative; z-index: 1; }
+
+  /* Blinking text in sphere center */
+  #sphere-text {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 1; display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  #sphere-text .blink-text {
+    font-size: 2.2rem; font-weight: 800; letter-spacing: 8px;
+    color: #fff; text-shadow: 0 0 32px rgba(45,212,191,0.8), 0 0 64px rgba(45,212,191,0.4);
+    animation: textBlink 2s ease-in-out infinite;
+    user-select: none;
+  }
+  @keyframes textBlink {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+
+  /* ===== CONTENT WRAPPER ===== */
+  #content-wrapper {
+    position: relative; z-index: 2;
+    margin-top: 100vh; /* starts below the sphere viewport */
+    background: #0e0e18;
+  }
+
+  /* ===== SECTIONS ===== */
+  section { position: relative; z-index: 1; padding: 5rem 2.5rem; }
+  .container { max-width: 1040px; margin: 0 auto; }
+  .section-tag { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 2px; color: #818cf8; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .section-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 3rem; color: #fff; }
+
+  /* ===== PROFILE HERO (first section after sphere) ===== */
+  #profile { padding-top: 6rem; padding-bottom: 6rem; }
+  #profile .container { display: flex; align-items: center; gap: 3rem; flex-wrap: wrap; }
+  .profile-text { flex: 1; min-width: 300px; }
+  .profile-avatar {
+    flex-shrink: 0; width: 220px; height: 220px; border-radius: 50%;
+    overflow: hidden; border: 2px solid rgba(99,102,241,0.4);
+    box-shadow: 0 0 48px rgba(99,102,241,0.2);
+  }
+  .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .profile-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0.9rem; border-radius: 50px; font-size: 0.78rem; font-weight: 500; background: rgba(99,102,241,0.1); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.2); margin-bottom: 1.5rem; letter-spacing: 0.3px; }
+  .profile-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #818cf8; animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .profile-name { font-size: 3rem; font-weight: 800; line-height: 1.15; letter-spacing: -1.5px; margin-bottom: 0.75rem; color: #fff; }
+  .profile-name .accent { background: linear-gradient(135deg, #818cf8 0%, #6366f1 40%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .profile-title { font-size: 1.05rem; color: rgba(255,255,255,0.5); font-weight: 500; margin-bottom: 1.25rem; }
+  .profile-title .highlight { color: #a5b4fc; font-weight: 600; }
+  .profile-desc { font-size: 0.95rem; color: rgba(255,255,255,0.42); max-width: 500px; margin-bottom: 2rem; line-height: 1.8; }
+  .profile-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.75rem; border-radius: 50px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.3s; border: none; letter-spacing: 0.1px; }
+  .btn-primary { background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; }
+  .btn-primary:hover { box-shadow: 0 0 32px rgba(99,102,241,0.4); transform: translateY(-2px); }
+  .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.4); color: #fff; transform: translateY(-2px); }
+
+  /* ===== METRICS ===== */
+  #metrics { border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.012); }
+  .metrics-grid { display: flex; justify-content: center; gap: 5rem; flex-wrap: wrap; }
+  .metric {
+    text-align: center; padding: 2rem 2.5rem;
+    background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 20px; transition: all 0.4s;
+  }
+  .metric:hover { border-color: rgba(99,102,241,0.15); background: rgba(99,102,241,0.03); transform: translateY(-2px); }
+  .metric .label { font-size: 0.7rem; font-weight: 600; letter-spacing: 2.5px; color: rgba(255,255,255,0.3); text-transform: uppercase; margin-bottom: 0.65rem; }
+  .metric .value { font-size: 2.8rem; font-weight: 800; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; line-height: 1; }
+  .metric .value.purple { background: linear-gradient(135deg, #c4b5fd, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .metric .value.green { background: linear-gradient(135deg, #6ee7b7, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .metric .sub { font-size: 0.7rem; color: rgba(255,255,255,0.2); margin-top: 0.4rem; letter-spacing: 1px; }
+
+  /* ===== ABOUT ===== */
+  #about, #education, #projects, #evaluation { background: rgba(255,255,255,0.008); }
+  #internship, #awards, #skills { background: transparent; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .about-text p { color: rgba(255,255,255,0.5); margin-bottom: 0.85rem; font-size: 0.93rem; line-height: 1.75; }
+  .about-text p strong { color: rgba(255,255,255,0.8); }
+  .info-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 1.75rem; }
+  .info-card .row { display: flex; justify-content: space-between; padding: 0.65rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.88rem; }
+  .info-card .row:last-child { border-bottom: none; }
+  .info-card .row .key { color: rgba(255,255,255,0.4); }
+  .info-card .row .val { color: rgba(255,255,255,0.8); font-weight: 500; }
+  .info-card .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+  .info-card .chip { padding: 0.3rem 0.75rem; border-radius: 50px; font-size: 0.78rem; font-weight: 500; background: rgba(99,102,241,0.1); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.15); }
+
+  /* ===== TIMELINE ===== */
+  .timeline { position: relative; padding-left: 2.5rem; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.08); }
+  .timeline-item { position: relative; margin-bottom: 3rem; }
+  .timeline-item:last-child { margin-bottom: 0; }
+  .timeline-item::before { content: ''; position: absolute; left: -2.68rem; top: 0.5rem; width: 8px; height: 8px; border-radius: 50%; background: #6366f1; box-shadow: 0 0 16px rgba(99,102,241,0.5); }
+  .timeline-header { display: flex; justify-content: space-between; flex-wrap: wrap; align-items: baseline; margin-bottom: 0.6rem; }
+  .timeline-role { font-size: 1.08rem; font-weight: 700; color: #fff; }
+  .timeline-company { color: #818cf8; font-weight: 600; }
+  .timeline-date { font-size: 0.82rem; color: rgba(255,255,255,0.35); }
+  .timeline-desc { color: rgba(255,255,255,0.5); }
+  .timeline-desc ul { list-style: none; }
+  .timeline-desc ul li { padding: 0.35rem 0; padding-left: 1.25rem; position: relative; font-size: 0.9rem; }
+  .timeline-desc ul li::before { content: '→'; position: absolute; left: 0; color: #818cf8; font-size: 0.75rem; }
+
+  /* ===== PROJECTS ===== */
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
+  .project-card {
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 18px; padding: 2rem; transition: all 0.35s; cursor: pointer;
+    position: relative; overflow: hidden;
+  }
+  .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #6366f1, #818cf8, #a78bfa); opacity: 0; transition: opacity 0.35s; }
+  .project-card:hover { border-color: rgba(99,102,241,0.2); transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(99,102,241,0.1); }
+  .project-card:hover::before { opacity: 1; }
+  .project-card h3 { font-size: 1.05rem; margin-bottom: 0.75rem; color: #fff; font-weight: 700; }
+  .project-card > p { color: rgba(255,255,255,0.45); font-size: 0.86rem; margin-bottom: 1.25rem; line-height: 1.7; }
+  .project-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+  .project-meta span { padding: 0.2rem 0.65rem; border-radius: 50px; font-size: 0.74rem; font-weight: 500; background: rgba(99,102,241,0.08); color: #a5b4fc; }
+  .project-card .link { display: inline-block; color: #818cf8; font-weight: 600; font-size: 0.85rem; }
+  .project-card:hover .link { color: #a5b4fc; }
+
+  /* ===== AWARDS ===== */
+  .awards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }
+  .award-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; align-items: flex-start; gap: 1rem; transition: all 0.3s; }
+  .award-card:hover { border-color: rgba(99,102,241,0.2); background: rgba(99,102,241,0.03); transform: translateY(-2px); }
+  .award-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 0.05rem; }
+  .award-card .level { font-size: 0.68rem; color: #818cf8; font-weight: 600; letter-spacing: 1px; margin-bottom: 0.1rem; text-transform: uppercase; }
+  .award-card .name { font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.85); }
+
+  /* ===== SKILLS ===== */
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+  .skill-cat { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 16px; padding: 1.75rem; transition: all 0.3s; }
+  .skill-cat:hover { border-color: rgba(99,102,241,0.15); }
+  .skill-cat h3 { font-size: 0.93rem; margin-bottom: 1.1rem; display: flex; align-items: center; gap: 0.5rem; color: #fff; font-weight: 600; }
+  .skill-cat h3 .icon { font-size: 1rem; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .skill-tag { padding: 0.3rem 0.75rem; border-radius: 50px; font-size: 0.78rem; font-weight: 500; background: rgba(99,102,241,0.07); color: #a5b4fc; transition: all 0.3s; }
+  .skill-tag:hover { background: rgba(99,102,241,0.15); color: #c7d2fe; }
+
+  /* ===== EVAL ===== */
+  .eval-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .eval-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 16px; padding: 1.75rem; }
+  .eval-card h4 { font-size: 0.93rem; color: #818cf8; margin-bottom: 0.75rem; font-weight: 600; }
+  .eval-card p { color: rgba(255,255,255,0.5); font-size: 0.88rem; line-height: 1.75; }
+
+  /* ===== MODALS ===== */
+  .modal-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); justify-content: center; align-items: center; padding: 2rem; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: #0f0f18; border: 1px solid rgba(99,102,241,0.2); border-radius: 20px; max-width: 660px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 2.5rem; position: relative; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-close { position: absolute; top: 1rem; right: 1.25rem; background: rgba(255,255,255,0.05); border: none; color: rgba(255,255,255,0.5); width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+  .modal-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+  .modal h2 { font-size: 1.35rem; margin-bottom: 1.5rem; color: #fff; font-weight: 700; }
+  .modal .detail-block { margin-bottom: 1.25rem; }
+  .modal .detail-block h4 { font-size: 0.72rem; color: #818cf8; letter-spacing: 2px; margin-bottom: 0.5rem; text-transform: uppercase; }
+  .modal .detail-block p, .modal .detail-block li { color: rgba(255,255,255,0.5); font-size: 0.88rem; line-height: 1.8; }
+  .modal .detail-block ul { list-style: none; }
+  .modal .detail-block ul li { padding: 0.3rem 0; padding-left: 1.25rem; position: relative; }
+  .modal .detail-block ul li::before { content: '→'; position: absolute; left: 0; color: #818cf8; }
+
+  /* ===== CONTACT ===== */
+  #contact { text-align: center; }
+  .contact-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 2rem; }
+  .contact-link { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1.5rem 2rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; transition: all 0.3s; min-width: 140px; }
+  .contact-link:hover { border-color: rgba(99,102,241,0.25); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.3); }
+  .contact-link .icon { font-size: 1.6rem; }
+  .contact-link .label { font-size: 0.88rem; font-weight: 600; color: rgba(255,255,255,0.7); }
+  .contact-link .value { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+
+  /* ===== SPHERE HINT ===== */
+  #sphere-hint {
+    position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    z-index: 3; text-align: center; font-size: 0.72rem; letter-spacing: 2px;
+    color: rgba(255,255,255,0.3); text-transform: uppercase;
+    transition: opacity 0.5s ease;
+  }
+  #sphere-hint .arrow { display: block; margin-top: 0.35rem; animation: bounce 2s ease infinite; font-size: 0.9rem; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+  footer { text-align: center; padding: 2.5rem; color: rgba(255,255,255,0.2); font-size: 0.82rem; border-top: 1px solid rgba(255,255,255,0.04); }
+
+  /* ===== SCROLL ANIMS ===== */
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    nav ul { display: none; position: absolute; top: 68px; left: 0; right: 0; flex-direction: column; background: rgba(18,18,28,0.95); backdrop-filter: blur(20px); padding: 1.5rem 2rem; gap: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    nav ul.active { display: flex; }
+    .nav-toggle { display: block; }
+    #profile .container { flex-direction: column-reverse; text-align: center; }
+    .profile-name { font-size: 2.2rem; }
+    .profile-avatar { width: 160px; height: 160px; }
+    .profile-btns { justify-content: center; }
+    .profile-desc { max-width: 100%; }
+    .about-grid { grid-template-columns: 1fr; }
+    .eval-grid { grid-template-columns: 1fr; }
+    .metrics-grid { gap: 3rem; }
+    .metric .value { font-size: 2rem; }
+    section { padding: 4rem 1.5rem; }
+    nav { padding: 0 1.5rem; }
+    .section-title { font-size: 1.6rem; }
+  }
+
+  @media (max-width: 480px) {
+    .profile-name { font-size: 1.8rem; }
+    .profile-avatar { width: 140px; height: 140px; }
+    .metrics-grid { gap: 2rem; }
+    .metric .value { font-size: 1.6rem; }
+    .timeline-header { flex-direction: column; }
+    .timeline { padding-left: 1.5rem; }
+    .timeline-item::before { left: -1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-particles"></canvas>
+
+<!-- ===== NAV ===== -->
+<nav>
+  <div class="logo">黄恒</div>
+  <button class="nav-toggle" aria-label="菜单" onclick="document.querySelector('nav ul').classList.toggle('active')">☰</button>
+  <ul>
+    <li><a href="#profile" onclick="document.querySelector('nav ul').classList.remove('active')">首页</a></li>
+    <li><a href="#about" onclick="document.querySelector('nav ul').classList.remove('active')">关于</a></li>
+    <li><a href="#education" onclick="document.querySelector('nav ul').classList.remove('active')">教育</a></li>
+    <li><a href="#internship" onclick="document.querySelector('nav ul').classList.remove('active')">实习</a></li>
+    <li><a href="#projects" onclick="document.querySelector('nav ul').classList.remove('active')">项目</a></li>
+    <li><a href="#awards" onclick="document.querySelector('nav ul').classList.remove('active')">获奖</a></li>
+    <li><a href="#skills" onclick="document.querySelector('nav ul').classList.remove('active')">技能</a></li>
+    <li><a href="#contact" class="nav-cta">联系我</a></li>
+  </ul>
+</nav>
+
+<!-- ===== FULL-SCREEN SPHERE ===== -->
+<div id="sphere-stage"></div>
+<div id="sphere-text">
+  <span class="blink-text">WELCOM!</span>
+</div>
+<div id="sphere-hint">
+  向下滚动
+  <span class="arrow">↓</span>
+</div>
+
+<!-- ===== CONTENT ===== -->
+<div id="content-wrapper">
+
+  <!-- Profile -->
+  <section id="profile">
+    <div class="container">
+      <div class="profile-text reveal">
+        <div class="profile-badge"><span class="dot"></span> 开放求职中 · AI产品运营实习生</div>
+        <h1 class="profile-name">你好，我是<br><span class="accent">黄恒</span></h1>
+        <p class="profile-title"><span class="highlight">AI产品运营实习生</span> · 期望城市：北京</p>
+        <p class="profile-desc">
+          建筑学研究生，擅长 Vibe Coding 快速原型开发，能借助 AI 工具将创意高效落地为可用的产品方案。具备从 0 到 1 的 AI 内容生产与运营经验，擅长用 Coze 搭建 Agent 产品，以数据驱动迭代增长。
+        </p>
+        <div class="profile-btns">
+          <a href="#projects" class="btn btn-primary">查看作品</a>
+          <a href="#contact" class="btn btn-outline">联系我</a>
+        </div>
+      </div>
+      <div class="profile-avatar reveal"><img src="avatar.jpg" alt="黄恒"></div>
+    </div>
+  </section>
+
+  <!-- Metrics -->
+  <section id="metrics">
+    <div class="container">
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="label">AI 项目经验</div>
+          <div class="value purple" data-count="4" data-suffix="+">0+</div>
+        </div>
+        <div class="metric">
+          <div class="label">累计播放量</div>
+          <div class="value green" data-count="10000" data-suffix="+">0+</div>
+        </div>
+        <div class="metric">
+          <div class="label">AI Agent 搭建</div>
+          <div class="value purple" data-count="4" data-suffix=" 个">0 个</div>
+        </div>
+        <div class="metric">
+          <div class="label">效率提升</div>
+          <div class="value green" data-count="70" data-suffix="%">0%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="container">
+      <p class="section-tag">About</p>
+      <h2 class="section-title reveal">关于我</h2>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p><strong>黄恒</strong> | 华东交通大学 建筑学 研究生在读</p>
+          <p>建筑技术科学方向，同时积极探索 AI 工具在内容生产和产品设计中的落地应用。具备视觉审美与摄影专长，习惯用 AI 工具拆解实际问题。</p>
+          <p>乐于探索前沿工具并解决实际问题，做事细致、追求交付质量，能同时推进多任务。</p>
+        </div>
+        <div class="info-card reveal">
+          <div class="row"><span class="key">求职意向</span><span class="val">AI产品运营实习生</span></div>
+          <div class="row"><span class="key">期望城市</span><span class="val">北京</span></div>
+          <div class="row"><span class="key">语言能力</span><span class="val">CET-4 / CET-6</span></div>
+          <div class="row"><span class="key">摄影器材</span><span class="val">佳能R10 + 适马18-50</span></div>
+          <div class="chip-row">
+            <span class="chip">Vibe Coding</span>
+            <span class="chip">AI 工具熟练</span>
+            <span class="chip">视觉审美</span>
+            <span class="chip">团队协作</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Education -->
+  <section id="education">
+    <div class="container">
+      <p class="section-tag">Education</p>
+      <h2 class="section-title reveal">教育经历</h2>
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-header">
+            <div><span class="timeline-role">建筑学 硕士研究生</span><span class="timeline-company"> — 华东交通大学</span></div>
+            <span class="timeline-date">2025.09 — 至今</span>
+          </div>
+          <div class="timeline-desc"><ul><li>研究方向：建筑技术科学</li><li>在校任职：研会宣传部摄影、建筑设计助教</li></ul></div>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-header">
+            <div><span class="timeline-role">建筑学 本科</span><span class="timeline-company"> — 华北理工大学</span></div>
+            <span class="timeline-date">2020.09 — 2025.06</span>
+          </div>
+          <div class="timeline-desc"><ul><li>获国家奖学金、国家励志奖学金、校级三好学生等多项荣誉</li><li>多次荣获校级、班级奖学金</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Internship -->
+  <section id="internship">
+    <div class="container">
+      <p class="section-tag">Internship</p>
+      <h2 class="section-title reveal">实习经历</h2>
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-header">
+            <div><span class="timeline-role">AI漫剧公司 · 视频内容实习生</span><span class="timeline-company"></span></div>
+            <span class="timeline-date">2026.03 — 2026.05</span>
+          </div>
+          <div class="timeline-desc"><ul>
+            <li>独立负责 3 部 AI 漫剧产品从 0 到 1 全流程落地，总时长 120+ 分钟，上线后累计播放量 10,000+，完播率稳定在 65% 以上</li>
+            <li>搭建多模型协同的 AI 视频生成工作流（即梦 / Midjourney / StableDiffusion / SEKO），形成标准化 AI 内容生产 SOP，将单集制作周期从 3 天压缩至 1.5 天</li>
+            <li>制定分镜脚本 → AI 生图 → 视频合成 → 后期精修的端到端内容管线，确保画面风格统一、叙事节奏紧凑</li>
+            <li>基于用户观看数据（留存曲线、跳过率）迭代内容策略，优化字幕呈现与音效设计，用户交互率提升 30%+</li>
+            <li>熟练使用剪映完成剪辑、转场、调色与后期包装，输出符合平台调性的高质量成品</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="container">
+      <p class="section-tag">Projects</p>
+      <h2 class="section-title reveal">项目经历</h2>
+      <div class="projects-grid">
+        <div class="project-card reveal" onclick="openModal('modal-ai-video')">
+          <h3>AI 漫剧全流程制作</h3>
+          <p>独立负责 3 部 AI 漫剧从创意到成片，搭建多模型协同的 AI 视频生产工作流，累计播放量 10,000+，完播率 65%+。</p>
+          <div class="project-meta"><span>即梦</span><span>Midjourney</span><span>SD</span><span>SEKO</span><span>剪映</span></div>
+          <span class="link">查看详情 →</span>
+        </div>
+        <div class="project-card reveal" onclick="openModal('modal-bim')">
+          <h3>BIM 全国大学生毕业设计竞赛</h3>
+          <p><strong>项目背景：</strong>BIM 碳排放评估依赖人工计算，流程繁琐、易出错、效率低。通过 AI Agent 实现自动化评估与方案迭代，将碳排评估效率提升约 70%，最终获得全国二等奖。</p>
+          <div class="project-meta"><span>Coze Agent</span><span>RAG</span><span>Python</span><span>BIM</span></div>
+          <span class="link">查看详情 →</span>
+        </div>
+        <div class="project-card reveal" onclick="openModal('modal-wallpaper')">
+          <h3>AI 壁纸小程序</h3>
+          <p><strong>项目背景：</strong>手机壁纸存在版权风险和比例适配两大痛点。通过 AI 工具链实现版权无忧的原创壁纸生成，并突破模型限制实现任意比例输出，同时集成小红书分享图一键生成功能。</p>
+          <div class="project-meta"><span>Vibe Coding</span><span>AI生图</span><span>小程序</span><span>自动化</span></div>
+          <span class="link">查看详情 →</span>
+        </div>
+        <div class="project-card reveal" onclick="openModal('modal-gzh')">
+          <h3>华交土木年华公众号运营</h3>
+          <p>参与华东交通大学土木年华官方公众号内容运营与供图，完成 20+ 期封面与配图拍摄/后期，覆盖 10+ 场活动，单篇最高阅读 3000+。</p>
+          <div class="project-meta"><span>公众号运营</span><span>摄影</span><span>LR/PS</span><span>内容策划</span></div>
+          <span class="link">查看详情 →</span>
+        </div>
+        <div class="project-card reveal" onclick="openModal('modal-teaching')">
+          <h3>建筑设计助教</h3>
+          <p>辅助 30+ 名本科生完成课程设计，负责视觉呈现与图纸指导，培养教学辅导与设计沟通能力。</p>
+          <div class="project-meta"><span>教学辅导</span><span>视觉呈现</span><span>课程设计</span></div>
+          <span class="link">查看详情 →</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Awards -->
+  <section id="awards">
+    <div class="container">
+      <p class="section-tag">Awards</p>
+      <h2 class="section-title reveal">获奖情况</h2>
+      <div class="awards-grid">
+        <div class="award-card reveal"><div class="award-icon">🥇</div><div><div class="level">国家级</div><div class="name">国家级二等奖</div></div></div>
+        <div class="award-card reveal"><div class="award-icon">🥈</div><div><div class="level">省级</div><div class="name">省级一等奖</div></div></div>
+        <div class="award-card reveal"><div class="award-icon">🥉</div><div><div class="level">省级</div><div class="name">省级二等奖</div></div></div>
+        <div class="award-card reveal"><div class="award-icon">🏅</div><div><div class="level">区级 / 院级</div><div class="name">区级院级奖项若干</div></div></div>
+        <div class="award-card reveal"><div class="award-icon">🎖️</div><div><div class="level">校级</div><div class="name">校级三好学生称号</div></div></div>
+        <div class="award-card reveal"><div class="award-icon">🌟</div><div><div class="level">校级</div><div class="name">优秀青年志愿者</div></div></div>
+        <div class="award-card reveal"><div class="award-icon">📚</div><div><div class="level">校级</div><div class="name">校级三等奖学金两次</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="container">
+      <p class="section-tag">Skills</p>
+      <h2 class="section-title reveal">专业技能</h2>
+      <div class="skills-grid">
+        <div class="skill-cat reveal">
+          <h3><span class="icon">🤖</span> AI 工具</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Midjourney</span><span class="skill-tag">Stable Diffusion</span>
+            <span class="skill-tag">即梦</span><span class="skill-tag">可灵</span>
+            <span class="skill-tag">Coze</span><span class="skill-tag">DeepSeek</span>
+            <span class="skill-tag">SEKO</span>
+          </div>
+        </div>
+        <div class="skill-cat reveal">
+          <h3><span class="icon">🎨</span> 专业软件</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Photoshop</span><span class="skill-tag">InDesign</span>
+            <span class="skill-tag">Illustrator</span><span class="skill-tag">剪映</span>
+            <span class="skill-tag">Lightroom</span>
+          </div>
+        </div>
+        <div class="skill-cat reveal">
+          <h3><span class="icon">💻</span> 编程 & 数据</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Python</span><span class="skill-tag">Vibe Coding</span>
+            <span class="skill-tag">RAG 知识库</span><span class="skill-tag">向量检索</span>
+            <span class="skill-tag">BIM</span>
+          </div>
+        </div>
+        <div class="skill-cat reveal">
+          <h3><span class="icon">📋</span> 产品 & 运营</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">AI 内容生产 SOP</span>
+            <span class="skill-tag">Prompt Engineering</span>
+            <span class="skill-tag">Agent 搭建</span>
+            <span class="skill-tag">工作流设计</span>
+            <span class="skill-tag">数据评估</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Evaluation -->
+  <section id="evaluation">
+    <div class="container">
+      <p class="section-tag">Evaluation</p>
+      <h2 class="section-title reveal">自我评价</h2>
+      <div class="eval-grid">
+        <div class="eval-card reveal">
+          <h4>工作能力</h4>
+          <p>能快速上手并落地各类 AI 工具，具备良好的视觉审美与 Vibe Coding 能力，善于主动拆解技术问题，有团队主导经验与跨部门协作能力。</p>
+        </div>
+        <div class="eval-card reveal">
+          <h4>职场性格</h4>
+          <p>乐于探索前沿工具并解决实际问题，做事细致、追求交付质量，能同时推进多任务。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="container">
+      <p class="section-tag">Contact</p>
+      <h2 class="section-title reveal">联系我</h2>
+      <p style="color:rgba(255,255,255,0.35);margin-top:-2rem;margin-bottom:1rem;">欢迎随时联系交流</p>
+      <div class="contact-links reveal">
+        <a href="mailto:1178203061@qq.com" class="contact-link"><span class="icon">📧</span><span class="label">邮箱</span><span class="value">1178203061@qq.com</span></a>
+        <a href="#" class="contact-link"><span class="icon">💬</span><span class="label">微信</span><span class="value">Yolo_Hhhhhhh</span></a>
+        <a href="#" class="contact-link"><span class="icon">🔗</span><span class="label">LinkedIn</span><span class="value">链接主页</span></a>
+        <a href="#" class="contact-link"><span class="icon">📱</span><span class="label">电话</span><span class="value">18701652643</span></a>
+      </div>
+    </div>
+  </section>
+
+  <footer><p>&copy; 2026 黄恒. Designed &amp; Built with passion.</p></footer>
+
+</div><!-- /content-wrapper -->
+
+<!-- Modals -->
+<div class="modal-overlay" id="modal-bim" onclick="if(event.target===this)closeModal('modal-bim')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-bim')">✕</button>
+    <h2>BIM 全国大学生毕业设计竞赛</h2>
+    <div class="detail-block"><h4>项目概况</h4><p>2025.12 — 2026.04 | 队长 | 获得<strong>全国二等奖</strong></p></div>
+    <div class="detail-block"><h4>项目背景</h4><p>BIM 碳排放评估传统上依赖人工查表与手动计算，流程繁琐、容易出错、迭代效率低。该项目旨在借助 AI Agent 实现碳排放评估的自动化与智能化。</p></div>
+    <div class="detail-block"><h4>核心成果</h4><ul>
+      <li>使用 Coze 独立搭建 4 个 AI Agent，覆盖碳排计算、方案对比、报告生成等环节</li>
+      <li>设计 RAG 知识库产品方案，构建向量检索体系，实现规范文档的智能问答</li>
+      <li>通过 Python 脚本实现 BIM 数据自动读取与碳排因子计算</li>
+      <li>碳排评估与方案迭代效率提升约 70%</li>
+      <li>带领团队从省赛突围，最终获得全国二等奖</li>
+    </ul></div>
+    <div class="detail-block"><h4>能力体现</h4><p>AI Agent 产品设计、RAG 知识库搭建、Python 数据处理、团队领导与项目管理</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-ai-video" onclick="if(event.target===this)closeModal('modal-ai-video')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-ai-video')">✕</button>
+    <h2>AI 漫剧全流程制作</h2>
+    <div class="detail-block"><h4>项目概况</h4><p>2026.03 — 2026.05 | AI漫剧公司 | 视频内容实习生</p></div>
+    <div class="detail-block"><h4>核心成果</h4><ul>
+      <li>独立负责 3 部 AI 漫剧从 0 到 1 全流程落地，总时长 120+ 分钟</li>
+      <li>上线后累计播放量 10,000+，完播率稳定在 65% 以上</li>
+      <li>搭建多模型协同的 AI 视频生成工作流（即梦 / Midjourney / StableDiffusion / SEKO）</li>
+      <li>制定分镜脚本 → AI 生图 → 视频合成 → 后期精修的端到端内容管线</li>
+      <li>输出可复用的 AI 内容生产 SOP，单集制作周期压缩 50%</li>
+    </ul></div>
+    <div class="detail-block"><h4>能力体现</h4><p>AI 内容全流程生产、多模型工作流编排、数据驱动的内容迭代、SOP 标准化、Prompt Engineering</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-teaching" onclick="if(event.target===this)closeModal('modal-teaching')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-teaching')">✕</button>
+    <h2>建筑设计助教</h2>
+    <div class="detail-block"><h4>项目概况</h4><p>2026.03 — 至今 | 华东交通大学土木建筑学院</p></div>
+    <div class="detail-block"><h4>核心成果</h4><ul><li>辅助 30+ 名本科生完成课程设计</li><li>负责视觉呈现与图纸指导</li></ul></div>
+    <div class="detail-block"><h4>能力体现</h4><p>教学辅导、视觉传达、设计思维</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-gzh" onclick="if(event.target===this)closeModal('modal-gzh')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-gzh')">✕</button>
+    <h2>华交土木年华公众号运营</h2>
+    <div class="detail-block"><h4>项目概况</h4><p>2025.09 — 至今 | 华东交通大学 · 土木年华官方公众号</p></div>
+    <div class="detail-block"><h4>核心成果</h4><ul>
+      <li>参与公众号日常内容运营与供图，完成 20+ 期封面与配图拍摄及后期</li>
+      <li>累计供稿/供图被采用 20+ 次，单篇最高阅读 3000+</li>
+      <li>覆盖 10+ 场校园活动拍摄，输出标准化活动摄影与修图 SOP</li>
+      <li>熟练使用 LR / PS 进行精修与调色，保证视觉风格统一</li>
+    </ul></div>
+    <div class="detail-block"><h4>能力体现</h4><p>内容策划与运营、活动摄影、后期精修（LR/PS）、标准化流程建设、跨部门协作</p></div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-wallpaper" onclick="if(event.target===this)closeModal('modal-wallpaper')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-wallpaper')">✕</button>
+    <h2>AI 壁纸小程序</h2>
+    <div class="detail-block"><h4>项目概况</h4><p>独立开发 | Vibe Coding | AI 工具链全流程应用</p></div>
+    <div class="detail-block"><h4>项目背景</h4><p>市面壁纸类产品普遍存在两大痛点：① 版权风险——网络图片来源不明，易引发侵权纠纷；② 比例适配——主流手机壁纸比例为 19.5:9，但大部分 AI 生图模型无法原生输出该比例。同时，壁纸创作者缺乏便捷的小红书分享图制作工具，手动排版耗时且审美难以保证。</p></div>
+    <div class="detail-block"><h4>核心成果</h4><ul>
+      <li><strong>版权无忧：</strong>全量使用 AI 生成原创壁纸，从根源解决版权侵权问题</li>
+      <li><strong>比例突破：</strong>通过算法实现任意 AI 模型均可生成 19.5:9 标准手机壁纸比例，填补模型原生能力空白</li>
+      <li><strong>分享图引擎：</strong>内置几十个可调参数，可组合出数百种精美小红书分享模板，满足不同审美风格</li>
+      <li><strong>零门槛操作：</strong>傻瓜式交互设计，一键生成高审美在线的小红书笔记分享图</li>
+    </ul></div>
+    <div class="detail-block"><h4>能力体现</h4><p>Vibe Coding、AI 工具链编排、产品设计与用户体验、前端开发、Prompt Engineering、自动化工作流</p></div>
+  </div>
+</div>
+
+<!-- ===== BG PARTICLES ===== -->
+<script>
+(function() {
+  const canvas = document.getElementById('bg-particles');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  const particles = [];
+  function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize); resize();
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25,
+      r: Math.random() * 1.8 + 0.4, o: Math.random() * 0.5 + 0.15,
+    });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fillStyle = 'rgba(129,140,248,' + p.o + ')'; ctx.fill(); });
+  }
+  function update() {
+    particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < -10) p.x = w + 10; if (p.x > w + 10) p.x = -10; if (p.y < -10) p.y = h + 10; if (p.y > h + 10) p.y = -10; });
+  }
+  (function loop() { update(); draw(); requestAnimationFrame(loop); })();
+})();
+</script>
+
+<!-- ===== THREE.JS MAIN SPHERE (full-visible, dense, iridescent, pull-effect) ===== -->
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+const stage = document.getElementById('sphere-stage');
+const W = stage.clientWidth;
+const H = stage.clientHeight;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 100);
+camera.position.z = 8;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(W, H);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+stage.appendChild(renderer.domElement);
+
+// --- Fibonacci sphere, high density, no visible clusters ---
+const COUNT = 5500;
+const RADIUS = 2.5;
+const positions = new Float32Array(COUNT * 3);
+const originals = new Float32Array(COUNT * 3);
+const colors = new Float32Array(COUNT * 3);
+
+const phi = Math.PI * (3 - Math.sqrt(5));
+
+for (let i = 0; i < COUNT; i++) {
+  const y = 1 - (i / (COUNT - 1)) * 2;
+  const rAtY = Math.sqrt(1 - y * y);
+  const theta = phi * i;
+
+  const x = Math.cos(theta) * rAtY;
+  const z = Math.sin(theta) * rAtY;
+
+  // Tiny random jitter to break perfect uniformity
+  const jx = (Math.random() - 0.5) * 0.04;
+  const jy = (Math.random() - 0.5) * 0.04;
+  const jz = (Math.random() - 0.5) * 0.04;
+  const len = Math.sqrt((x+jx)**2 + (y+jy)**2 + (z+jz)**2);
+
+  const idx = i * 3;
+  positions[idx] = originals[idx] = ((x + jx) / len) * RADIUS;
+  positions[idx + 1] = originals[idx + 1] = ((y + jy) / len) * RADIUS;
+  positions[idx + 2] = originals[idx + 2] = ((z + jz) / len) * RADIUS;
+
+  // Iridescent colors: blue-green-teal, uneven distribution
+  const hue = 0.48 + Math.abs(y) * 0.2 + Math.sin(theta * 5 + y * 3) * 0.08;
+  const sat = 0.45 + Math.abs(Math.cos(theta * 2)) * 0.35;
+  const light = 0.5 + Math.random() * 0.25;
+  const rgb = hslToRgb(((hue % 1) + 1) % 1, sat, light);
+  colors[idx] = rgb[0];
+  colors[idx + 1] = rgb[1];
+  colors[idx + 2] = rgb[2];
+}
+
+function hslToRgb(h, s, l) {
+  const a = s * Math.min(l, 1 - l);
+  const f = (n) => { const k = (n + h * 12) % 12; return l - a * Math.max(-1, Math.min(k - 3, Math.min(9 - k, 1))); };
+  return [f(0), f(8), f(4)];
+}
+
+const geom = new THREE.BufferGeometry();
+geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+// Varying particle sizes for texture
+const sizes = new Float32Array(COUNT);
+for (let i = 0; i < COUNT; i++) {
+  sizes[i] = (Math.random() * 0.06 + 0.03);
+}
+geom.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+const mat = new THREE.PointsMaterial({
+  size: 0.045,
+  vertexColors: true,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+  transparent: true,
+  opacity: 0.9,
+});
+
+const points = new THREE.Points(geom, mat);
+scene.add(points);
+
+// --- Thin orbit ring for depth ---
+const ringCount = 600;
+const ringPos = new Float32Array(ringCount * 3);
+const ringOrig = new Float32Array(ringCount * 3);
+for (let i = 0; i < ringCount; i++) {
+  const angle = (i / ringCount) * Math.PI * 2;
+  const r = RADIUS * 0.62;
+  const idx = i * 3;
+  ringPos[idx] = ringOrig[idx] = Math.cos(angle) * r;
+  ringPos[idx + 1] = ringOrig[idx + 1] = Math.sin(angle) * r * 0.35;
+  ringPos[idx + 2] = ringOrig[idx + 2] = 0;
+}
+const ringGeom = new THREE.BufferGeometry();
+ringGeom.setAttribute('position', new THREE.BufferAttribute(ringPos, 3));
+const ringMat = new THREE.PointsMaterial({
+  color: 0x2dd4bf, size: 0.022,
+  blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.45,
+});
+const ring = new THREE.Points(ringGeom, ringMat);
+scene.add(ring);
+
+// --- Mouse interaction: stronger disturbance + edge pull ---
+const mouse = new THREE.Vector2();
+const mouseWorld = new THREE.Vector3();
+const raycaster = new THREE.Raycaster();
+raycaster.params.Points.threshold = 0.85;
+let mouseOnSphere = false;
+let hitPoint = new THREE.Vector3();
+let mouseSpeed = 0;
+let lastMouse = new THREE.Vector2();
+
+function onMove(e) {
+  const rect = stage.getBoundingClientRect();
+  lastMouse.copy(mouse);
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  mouseSpeed = mouse.distanceTo(lastMouse);
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObject(points);
+  mouseOnSphere = hits.length > 0;
+  if (mouseOnSphere) hitPoint.copy(hits[0].point);
+  // Convert mouse to world space at z=0 plane for disturbance
+  mouseWorld.set(mouse.x * 5, mouse.y * 5, 0);
+}
+stage.addEventListener('mousemove', onMove);
+stage.addEventListener('touchmove', (e) => {
+  const rect = stage.getBoundingClientRect();
+  lastMouse.copy(mouse);
+  mouse.x = ((e.touches[0].clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.touches[0].clientY - rect.top) / rect.height) * 2 + 1;
+  mouseSpeed = mouse.distanceTo(lastMouse);
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObject(points);
+  mouseOnSphere = hits.length > 0;
+  if (mouseOnSphere) hitPoint.copy(hits[0].point);
+  mouseWorld.set(mouse.x * 5, mouse.y * 5, 0);
+}, { passive: true });
+
+// --- Animation ---
+const clock = new THREE.Clock();
+let targetScale = 1;
+let currentScale = 1;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.1);
+
+  // Smooth scale transition (scroll-driven)
+  currentScale += (targetScale - currentScale) * 3 * dt;
+
+  // Gentle rotation with slight wobble
+  points.rotation.y += 0.15 * dt;
+  points.rotation.x += Math.sin(performance.now() * 0.00025) * 0.05 * dt;
+  ring.rotation.y -= 0.22 * dt;
+  ring.rotation.x += 0.06 * dt;
+
+  points.scale.setScalar(currentScale);
+  ring.scale.setScalar(currentScale);
+
+  // --- Pull/stretch: particles react to mouse + avoid center text ---
+  const arr = geom.attributes.position.array;
+  const ringArr = ringGeom.attributes.position.array;
+  const invMatrix = points.matrixWorld.clone().invert();
+
+  // Center repulsion zone (where "求职中" text is) — screen-space center = world origin
+  const centerRepelRadius = 0.65;  // radius of exclusion zone
+  const centerRepelStrength = 0.7;
+
+  for (let i = 0; i < COUNT; i++) {
+    const idx = i * 3;
+    let ox = originals[idx], oy = originals[idx + 1], oz = originals[idx + 2];
+
+    // 1. Center text avoidance: push particles away from the horizontal center band
+    const distFromCenter = Math.sqrt(ox * ox + oz * oz);
+    const yAbs = Math.abs(oy);
+    if (distFromCenter < centerRepelRadius && yAbs < 0.55) {
+      const repelForce = (1 - distFromCenter / centerRepelRadius) * centerRepelStrength;
+      const repelDir = distFromCenter > 0.001 ? ox / distFromCenter : 1;
+      ox += repelDir * repelForce * 0.8;
+      oz += (oz / (distFromCenter + 0.001)) * repelForce * 0.8;
+      oy += (Math.sign(oy) || 1) * repelForce * 0.3;
+    }
+
+    // 2. Mouse disturbance field
+    const wp = new THREE.Vector3(ox, oy, oz).applyMatrix4(points.matrixWorld);
+    const distToMouse = wp.distanceTo(mouseWorld);
+    const mouseInfluence = 1.2;
+    if (distToMouse < mouseInfluence) {
+      const strength = (1 - distToMouse / mouseInfluence);
+      // Push particles away from mouse (repulsion)
+      const pushDir = wp.clone().sub(mouseWorld).normalize();
+      ox += pushDir.x * strength * 0.35;
+      oy += pushDir.y * strength * 0.35;
+      oz += pushDir.z * strength * 0.35;
+      // Add tangential swirl
+      const swirlStrength = strength * mouseSpeed * 0.15;
+      ox += -pushDir.z * swirlStrength;
+      oz += pushDir.x * swirlStrength;
+    }
+
+    // 3. Edge pull: mouse near sphere edge can pull particles beyond boundary
+    if (mouseOnSphere) {
+      const hitDist = wp.distanceTo(hitPoint);
+      const pullInfluence = 0.9;
+      if (hitDist < pullInfluence) {
+        const strength = (1 - hitDist / pullInfluence) * 0.55;
+        const pullDir = hitPoint.clone().sub(wp).normalize();
+        const pulled = wp.clone().add(pullDir.multiplyScalar(strength));
+        // Allow particles to go beyond the sphere surface (up to 1.4x radius)
+        const local = pulled.applyMatrix4(invMatrix);
+        const dist = Math.sqrt(local.x*local.x + local.y*local.y + local.z*local.z);
+        const maxDist = RADIUS * 1.35;
+        if (dist > maxDist) {
+          local.normalize().multiplyScalar(maxDist);
+        }
+        ox = local.x; oy = local.y; oz = local.z;
+      }
+    }
+
+    arr[idx] = ox; arr[idx + 1] = oy; arr[idx + 2] = oz;
+  }
+  geom.attributes.position.needsUpdate = true;
+
+  // Mouse speed decay
+  mouseSpeed *= 0.92;
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// --- Scroll: sphere zooms, text fades ---
+const hint = document.getElementById('sphere-hint');
+const sphereText = document.getElementById('sphere-text');
+
+function onScroll() {
+  const scrollY = window.scrollY;
+  const vh = window.innerHeight;
+  const progress = Math.min(scrollY / vh, 1);
+
+  // Sphere scales up
+  targetScale = 1 + progress * 5;
+
+  // Text in center fades out as sphere zooms
+  let textOpacity, sphereOpacity;
+
+  if (progress < 0.4) {
+    textOpacity = 1;
+    sphereOpacity = 1;
+  } else if (progress < 0.75) {
+    const t = (progress - 0.4) / 0.35;
+    textOpacity = 1 - t;
+    sphereOpacity = 1 - t * 0.3;
+  } else {
+    textOpacity = 0;
+    sphereOpacity = 1 - (progress - 0.75) / 0.25;
+  }
+
+  sphereText.style.opacity = textOpacity;
+  stage.style.opacity = sphereOpacity;
+  hint.style.opacity = sphereOpacity;
+
+  stage.style.pointerEvents = progress > 0.95 ? 'none' : 'auto';
+
+  if (progress >= 1) {
+    sphereText.style.display = 'none';
+  } else {
+    sphereText.style.display = 'flex';
+  }
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+
+// Resize
+window.addEventListener('resize', () => {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+});
+</script>
+
+
+<!-- ===== SCROLL REVEAL & COUNTERS ===== -->
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function animateCount(el) {
+  const target = parseInt(el.dataset.count);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1800;
+  const start = performance.now();
+  function tick(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(target * eased).toLocaleString() + suffix;
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+const metricsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.value[data-count]').forEach(el => animateCount(el));
+      metricsObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+const ms = document.getElementById('metrics');
+if (ms) metricsObserver.observe(ms);
+
+window.openModal = function(id) {
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+window.closeModal = function(id) {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
+};
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+    document.body.style.overflow = '';
+  }
+});
+</script>
+</body>
+</html>
